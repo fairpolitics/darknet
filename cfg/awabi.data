@@ -1,5 +1,5 @@
 classes= 1
-train  = /content/drive/My\ Drive/darknet/cfg/awabi-train.txt
-valid  = /content/drive/My\ Drive/darknet/cfg/awabi-test.txt
-names =/content/drive/My\ Drive/darknet/data/awabi.names
-backup = /content/drive/My\ Drive/darknet/backup
+train  = /content/drive/My Drive/darknet/cfg/awabi-train.txt
+valid  = /content/drive/My Drive/darknet/cfg/awabi-test.txt
+names = /content/drive/My Drive/darknet/data/awabi.names
+backup = /content/drive/My Drive/darknet/backup
