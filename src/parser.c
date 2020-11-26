@@ -1012,9 +1012,6 @@ void save_weights_upto(network *net, char *filename, int cutoff)
     }
 #endif
     fprintf(stderr, "Saving weights to %s\n", filename);
-    //time_t t = time(NULL);
-    //struct tm *local = localtime(&t);
-    //fprintf(stderr, "%04d/%02d/%02d %02d:%02d:%02d  Saving weights to %s\n", local->tm_year + 1900, local->tm_mon + 1, local->tm_mday, local->tm_hour, local->tm_min, local->tm_sec, filename);
     FILE *fp = fopen(filename, "wb");
     if(!fp) file_error(filename);
 

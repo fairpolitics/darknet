@@ -2,4 +2,4 @@ classes= 1
 train  = cfg/awabi-train.txt
 valid  = cfg/awabi-test.txt
 names = data/awabi.names
-backup = backup
+backup = /content/backup
