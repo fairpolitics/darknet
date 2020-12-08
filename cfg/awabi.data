@@ -1,5 +1,5 @@
 classes= 1
-train  = cfg/awabi-train.txt
-valid  = cfg/awabi-test.txt
+train  = /content/divide/awabi-train.txt
+valid  = /content/divide/awabi-test.txt
 names = data/awabi.names
 backup = /content/backup
