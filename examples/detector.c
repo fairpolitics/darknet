@@ -577,6 +577,26 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
     char buff[256];
     char *input = buff;
     float nms=.45;
+
+// awabi custom by shoi from here.
+    const char *dir = ".//output";
+    struct stat statBuf;
+
+    if (stat(dir, &statBuf) != 0)
+    {
+        printf("ディレクトリ%sが存在しないため作成します。\n", dir);
+        if (mkdir(dir, 0755) == 0)
+        {
+            printf("ディレクトリ%sを作成しました。\n", dir);
+        }
+        else
+        {
+            printf("ディレクトリ%sを作成できませんでした。", dir);
+            return;
+        }
+    }
+// awabi custom by shoi to here.
+
     while(1){
         if(filename){
             strncpy(input, filename, 256);
@@ -605,7 +625,10 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
         //printf("%d\n", nboxes);
         //if (nms) do_nms_obj(boxes, probs, l.w*l.h*l.n, l.classes, nms);
         if (nms) do_nms_sort(dets, nboxes, l.classes, nms);
-        draw_detections(im, dets, nboxes, thresh, names, alphabet, l.classes);
+        // awabi custom by shoi from here.
+        //draw_detections(im, dets, nboxes, thresh, names, alphabet, l.classes);
+        draw_detections_awabi(im, dets, nboxes, thresh, names, alphabet, l.classes, input);
+        // awabi custom by shoi from here.
         free_detections(dets, nboxes);
         if(outfile){
             save_image(im, outfile);
