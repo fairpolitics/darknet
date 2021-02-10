@@ -306,22 +306,70 @@ void draw_detections_awabi(image im, detection *dets, int num, float thresh, cha
     {
         char labelstr[4096] = {0};
         int class = -1;
+        int rejectFlag = 0;
+
+        box tmpb = dets[i].bbox;
+        int tmpleft = (tmpb.x - tmpb.w / 2.) * im.w;
+        int tmpright = (tmpb.x + tmpb.w / 2.) * im.w;
+        int tmptop = (tmpb.y - tmpb.h / 2.) * im.h;
+        int tmpbot = (tmpb.y + tmpb.h / 2.) * im.h;
+
+        if (tmpleft < 0)
+            tmpleft = 0;
+        if (tmpright > im.w - 1)
+            tmpright = im.w - 1;
+        if (tmptop < 0)
+            tmptop = 0;
+        if (tmpbot > im.h - 1)
+            tmpbot = im.h - 1;
+
+        int tmpwidth = tmpright - tmpleft;
+        int tmpheight = tmpbot - tmptop;
+
+        if (tmpwidth > tmpheight)
+        {
+            if (tmpwidth > 2 * tmpheight)
+            {
+                rejectFlag = 1;
+            }
+        }
+        else
+        {
+            if (tmpheight > 2 * tmpwidth)
+            {
+                rejectFlag = 1;
+            }
+        }
+
+        if (tmpleft == 0 || tmpright == im.w - 1 || tmptop == 0 || tmpbot == im.h - 1)
+        {
+            rejectFlag = 1;
+        }
+
         for (j = 0; j < classes; ++j)
         {
             if (dets[i].prob[j] > thresh)
             {
+                char buf[8];
+                snprintf(buf, 8, "(%.0f%%)", dets[i].prob[j] * 100);
+
                 if (class < 0)
                 {
                     strcat(labelstr, names[j]);
+                    strcat(labelstr, buf);
                     class = j;
                 }
                 else
                 {
                     strcat(labelstr, ", ");
                     strcat(labelstr, names[j]);
+                    strcat(labelstr, buf);
                 }
                 printf("%s: %.0f%%\n", names[j], dets[i].prob[j] * 100);
-                fprintf(outFile, "%s: %.0f%%\n", names[j], dets[i].prob[j] * 100);
+                if (!rejectFlag)
+                {
+                    fprintf(outFile, "%s: %.0f%%\n", names[j], dets[i].prob[j] * 100);
+                }
             }
         }
         if (class >= 0)
@@ -350,6 +398,16 @@ void draw_detections_awabi(image im, detection *dets, int num, float thresh, cha
             box b = dets[i].bbox;
             //printf("%f %f %f %f\n", b.x, b.y, b.w, b.h);
 
+            if (rejectFlag)
+            {
+                red = 100.0;
+                green = 100.0;
+                blue = 100.0;
+                rgb[0] = red;
+                rgb[1] = green;
+                rgb[2] = blue;
+            }
+
             int left = (b.x - b.w / 2.) * im.w;
             int right = (b.x + b.w / 2.) * im.w;
             int top = (b.y - b.h / 2.) * im.h;
@@ -367,7 +425,10 @@ void draw_detections_awabi(image im, detection *dets, int num, float thresh, cha
             printf("Bounding Box: Left=%d, Top=%d, Right=%d, Bottom=%d\n", left, top, right, bot);
             //printf("fileName:%s\n", fileName);
             //printf("Width:%d px Height:%d px\n", right - left, bot - top);
-            fprintf(outFile, "Bounding Box: Left=%d, Top=%d, Right=%d, Bottom=%d\n", left, top, right, bot);
+            if (!rejectFlag)
+            {
+                fprintf(outFile, "Bounding Box: Left=%d, Top=%d, Right=%d, Bottom=%d\n", left, top, right, bot);
+            }
 
             draw_box_width(im, left, top, right, bot, width, red, green, blue);
             if (alphabet)
