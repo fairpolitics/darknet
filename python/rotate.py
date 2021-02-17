@@ -3,7 +3,7 @@ import time
 import os
 import sys
 
-MAX_ANGLE = 90
+MAX_ANGLE = 105
 ROTATE_ANGLE = 15
 
 
